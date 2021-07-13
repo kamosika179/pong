@@ -1,14 +1,13 @@
 
 class Visible:
     #初期化、name,visual_nameはstring、x_pos、y_posは左上をさすはずです
-    def __init__(self,init_x_pos,init_y_pos,name,visul_name):
+    def __init__(self,init_x_pos,init_y_pos,name,):
         self.is_appear = False
         self.init_x_pos = init_x_pos
         self.init_y_pos = init_y_pos
         self.x_pos = init_x_pos
         self.y_pos = init_y_pos
         self.name = name
-        self.visual_name = visul_name
 
     #is_apeerを切り替えて表示されないようにする
     def delete(self):
@@ -30,8 +29,8 @@ class Visible:
 class Ball(Visible):
 
     #x_speedとy_speedが追加されています
-    def __init__(self, init_x_pos, init_y_pos, name,visual_name,x_speed,y_speed):
-        super().__init__(init_x_pos, init_y_pos, name,visual_name)
+    def __init__(self, init_x_pos, init_y_pos, name,x_speed,y_speed):
+        super().__init__(init_x_pos, init_y_pos, name)
         self.x_speed = x_speed
         self.y_speed = y_speed
 
@@ -48,12 +47,6 @@ class Ball(Visible):
         self.x_pos += self.x_speed
         self.y_pos += self.y_speed
 
-    #ボールと何か（バー、ブロック、壁）が接触したことを感知したい。縦にぶつかったか、横にぶつかったかで処理を変えたい
-    def touch(self):
-        #もしブロックにぶつかったならそのブロックを削除する
-        #ぶつかったブロックを特定し、そのブロックのdeleteをいじればいいかな
-        return
-
     def set_x_speed(self,speed):
         self.x_speed = speed
 
@@ -64,52 +57,22 @@ class Ball(Visible):
 class Item(Ball):
     
     #アイテムは下に落ちるだけなのでx_speedを0にする
-    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed):
+    #item_typeはitemの種類を表しています。最初はクラスで分けていたけどなんか・・・汚いので
+    #種類はspeedup,twin,biggerの３種類です。main関数のinteractなんたらーで利用しています。
+    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed,item_type):
         super().__init__(init_x_pos, init_y_pos, name, x_speed, y_speed)
         self.x_speed = 0
+        self.item_type = item_type
 
-    #アイテムとバーが接触したことを感知する。接触したならTrueを返す
-    def touch_bar(self):
-        return True
+    def get_item_type(self):
+        return self.item_type
 
-class Speed_up_item(Item):
-
-    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed):
-        super().__init__(init_x_pos, init_y_pos, name, x_speed, y_speed)
-
-    #バーとアイテムが接触した時、ボールの速さを変えて、アイテムは非表示にする
-    def touch(self):
-        if self.touch_bar():
-
-            self.delete()
-
-class Clone_item(Item):
-
-    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed):
-        super().__init__(init_x_pos, init_y_pos, name, x_speed, y_speed)
-
-    #バーとアイテムが接触した時、ボールの数を増やし、アイテムは非表示にする
-    def touch(self):
-        if self.touch_bar():
-
-            self.delete()
-
-class Bigger_item(Item):
-
-    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed):
-        super().__init__(init_x_pos, init_y_pos, name, x_speed, y_speed)
-
-    #バーとアイテムが接触した時、バーの長さを増やし、アイテムは非表示にする
-    def touch(self):
-        if self.touch_bar():
-
-            self.delete()
 
 class Bar(Visible):
 
     #lengthとx_speedを追加した。
-    def __init__(self, init_x_pos, init_y_pos, name,visual_name, length, x_speed):
-        super().__init__(init_x_pos, init_y_pos, name,visual_name)
+    def __init__(self, init_x_pos, init_y_pos, name, length, x_speed):
+        super().__init__(init_x_pos, init_y_pos, name)
         self.length = length
         self.x_speed = x_speed
 
@@ -118,7 +81,7 @@ class Bar(Visible):
         return True
 
     #バーを動かしていいなら、プラス方向へ進める
-    def move_left(self):
+    def move_right(self):
         if self.can_move:
             self.x_pos += self.x_speed
 
@@ -132,34 +95,47 @@ class Bar(Visible):
 
 class Block(Visible):
     #itemオブジェクトを入れる変数を持たせる。初期値はNone
-    def __init__(self, init_x_pos, init_y_pos, name,visual_name):
-        super().__init__(init_x_pos, init_y_pos, name,visual_name)
+    def __init__(self, init_x_pos, init_y_pos, name):
+        super().__init__(init_x_pos, init_y_pos, name)
         self.item = None
+
+    #itemを持っているかどうか？
+    def has_item(self):
+        if self.item == None:
+            return False
+        else:
+            return True
 
     #Itemオブジェクトを引数に持つ
     def set_item(self,item):
         self.item= item
 
-    def get_item_name(self):
-        return self.item.get_name()
+    def get_item_type(self):
+        return self.item.get_item_type()
 
-#適当に作っています。
+'''
+このゲームではボタンを押すと画面遷移が行われる。
+なので、引数として、各画面を表す文字を持っておく（２つ）
+例えば、メイン画面からゲーム画面へいくボタンを作るのであれば。
+Button("title","game_play")とする。
+で、before_screen = "title",next_screen = "game_play"などとしておき、
+ボタンを押されたら。view.now_screen = next_screenとする。
+とすれば、ボタンないに画面遷移に関するものを描くことができるのでは？
+ならそもそもbefore_screenを引数で受け取る必要もない気がする。
+一方通行だしボタンって。
+
+ここではnext_screenの値を返すしかできないね・・・viewに渡せない。
+Modelならviewを持っているので、
+Modelの中でview.next_screen = Button.push_and_get_next_screenにしようか
+'''
 class Button(Visible):
-    def __init__(self, init_x_pos, init_y_pos, name, visul_name):
-        super().__init__(init_x_pos, init_y_pos, name, visul_name)
-        self.flag = False
+    def __init__(self, init_x_pos, init_y_pos, name,next_screen):
+        super().__init__(init_x_pos, init_y_pos, name)
+        self.next_screen = next_screen
 
-    def pushed(self):
-        self.flag = True
+    def push_and_get_next_screen(self):
+        return self.next_screen
     
-    def set_False(self):
-        self.flag = False
-
-#適当に作っています。
-class Character(Visible):
-    def __init__(self, init_x_pos, init_y_pos, name, visul_name):
-        super().__init__(init_x_pos, init_y_pos, name, visul_name)
-
 
 class Model:
 
@@ -180,11 +156,22 @@ class Model:
             self.bar.move_left()
 
     #Blockを作成し、blocksに入れる、関数にする必要があるのかはわからない
+    #blockもvisiblesに入れた方がいいのかなぁ。まあ層の方がいいのかもな・・・とするとなんでblocks作ったのかが・・・
     def cleate_blocks(self):
         for i in range(5):
             for j in range(4):
                 #iとjの値を参考にBlockの座標を決める
                 self.blocks[i][j] = Block()
+
+    #ボタンを作成して、visiblesに追加する
+    def create_button(self,x_pos,y_pos,name,next_screen):
+        bt = Button(x_pos,y_pos,name,next_screen)
+        self.visibles.append(bt)
+
+    #画像を作成して、visiblesに追加する
+    def create_picture(self,x_pos,y_pos,name):
+        pi = Visible(x_pos,y_pos,name)
+        self.visibles.append(pi)
 
     #ブロックとボールが接触した時の処理を書く。ここが一番難関になるでしょう。
     def interact_block_ball(self):
@@ -200,11 +187,16 @@ class Model:
         self.ball.turn_y()
 
     #バーとアイテムが接触したかの判定とその場合の処理を書く。updateで呼び出す
-    def interact_bar_item(self):
+    def interact_bar_item(self,item):
         #item.nameに応じてif分で処理を変えていく方がいいかもしれないね。
         #そしたらitemのtouch()はいらなくなるかも？
         #ここも接触したアイテムオブジェクトを特定する必要があるね・・・
-        return
+        if item.get_item_type() == "speedup":
+            return
+        elif item.get_item_type() == "twin":
+            return
+        elif item.get_item_type() == "bigger":
+            return
 
     #壁とボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_wall_ball(self):
@@ -238,7 +230,7 @@ class Model:
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
             if v.get_name() == "item":
-                self.interact_bar_item()
+                self.interact_bar_item(v)
 
             if v.is_appear == False:
                 self.visibles.remove(v)

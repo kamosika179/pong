@@ -11,6 +11,8 @@ class View:
     def __init__(self,screen):
         #この辺はサンプルコードまるパクリです
         self.screen = screen
+        #どの画面を表示するか決める。
+        self.now_screen = ""
         self.sprites = {}
         self.sprites["bar"] = pygame.image.load("bar.png")
         self.sprites["ball"] = pygame.image.load("ball.png")
@@ -30,7 +32,7 @@ class View:
 
 
     def draw(self,visible_obj):
-        img = self.sprites[visible_obj.visual_name]
+        img = self.sprites[visible_obj.name]
         self.screen.blit(img,(visible_obj.x_pos,visible_obj.y_pos))
 
     
@@ -62,7 +64,16 @@ class App:
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
-                
+
+            #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
+            while self.view.now_screen == "title":
+                return
+            while self.view.now_screen == "game_play":
+                return
+            while self.view.now_screen == "ranking":
+                return
+            while self.view.now_screen == "how_to_play":
+                return
 
 
 if __name__ == "__main__":
