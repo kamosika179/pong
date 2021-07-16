@@ -2,7 +2,7 @@
 class Visible:
     #初期化、name,visual_nameはstring、x_pos、y_posは左上をさすはずです
     def __init__(self,init_x_pos,init_y_pos,name,):
-        self.is_appear = False
+        self.is_appear = True
         self.init_x_pos = init_x_pos
         self.init_y_pos = init_y_pos
         self.x_pos = init_x_pos
@@ -141,11 +141,11 @@ class Model:
 
     def __init__(self,view):
         self.view = view
-        self.blocks = [5][4]
+        self.blocks = []
         #座標が未確定なので。
-        self.bar = Bar()
-        self.ball = Ball()
-        self.visibles = [self.bar,self.ball]
+        #self.bar = Bar()
+        self.ball = Ball(10,10,"ball",0,0)
+        self.visibles = [self.ball]
 
     #Controllerで呼び出すかも？な処理
     def move(self,identifier_key):
@@ -224,9 +224,10 @@ class Model:
 
             #ここにボールに関する、毎回実行した方が良いようなものをまとめおく
             if v.get_name() == "ball":
-                self.interact_bar_ball()
-                self.interact_block_ball()
-                self.interact_wall_ball()
+                #self.interact_bar_ball()
+                #self.interact_block_ball()
+                #self.interact_wall_ball()
+                print("test")
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
             if v.get_name() == "item":

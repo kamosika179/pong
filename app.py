@@ -5,30 +5,30 @@ import sys
 from pygame.locals import *
 from model import Model
 
-WIN_SIZE = (0,0)
-WIN_TITLE = ""
+WIN_SIZE = (700,800)
+WIN_TITLE = "a"
 class View:
     def __init__(self,screen):
         #この辺はサンプルコードまるパクリです
         self.screen = screen
         #どの画面を表示するか決める。
-        self.now_screen = ""
+        self.now_screen = "test"
         self.sprites = {}
-        self.sprites["bar"] = pygame.image.load("bar.png")
-        self.sprites["ball"] = pygame.image.load("ball.png")
-        self.sprites["block"] = pygame.image.load("block.png")
-        self.sprites["special_block"] = pygame.image.load("special_block.png")
-        self.sprites["speed_item"] = pygame.image.load("speed_item.png")
-        self.sprites["clone_item"] = pygame.image.load("clone_item.png")
-        self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
+        #self.sprites["bar"] = pygame.image.load("bar.png")
+        self.sprites["ball"] = pygame.image.load("ball.jpg")
+        #self.sprites["block"] = pygame.image.load("block.png")
+        #self.sprites["special_block"] = pygame.image.load("special_block.png")
+        #self.sprites["speed_item"] = pygame.image.load("speed_item.png")
+        #self.sprites["clone_item"] = pygame.image.load("clone_item.png")
+        #self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
         #play画面では使わなそうなもの
-        self.sprites["titlelogo"] = pygame.image.load("titlelogo.png")
-        self.sprites["stageclear"] = pygame.image.load("stageclear.png")
-        self.sprites["gameover"] = pygame.image.load("gameover.png")
-        self.sprites["start_button"] = pygame.image.load("start_button.png")
-        self.sprites["score_button"] = pygame.image.load("score_button.png")
-        self.sprites["retry_button"] = pygame.image.load("retry_button.png")
-        self.sprites["exit_button"] = pygame.image.load("exit_button.png")
+        #self.sprites["titlelogo"] = pygame.image.load("titlelogo.png")
+        #self.sprites["stageclear"] = pygame.image.load("stageclear.png")
+        #self.sprites["gameover"] = pygame.image.load("gameover.png")
+        #self.sprites["start_button"] = pygame.image.load("start_button.png")
+        #self.sprites["score_button"] = pygame.image.load("score_button.png")
+        #self.sprites["retry_button"] = pygame.image.load("retry_button.png")
+        #self.sprites["exit_button"] = pygame.image.load("exit_button.png")
 
 
     def draw(self,visible_obj):
@@ -65,15 +65,20 @@ class App:
                     pygame.quit()
                     sys.exit()
 
-            #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
-            while self.view.now_screen == "title":
-                return
-            while self.view.now_screen == "game_play":
-                return
-            while self.view.now_screen == "ranking":
-                return
-            while self.view.now_screen == "how_to_play":
-                return
+                #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
+                while self.view.now_screen == "title":
+                    return
+                while self.view.now_screen == "game_play":
+                    return
+                while self.view.now_screen == "ranking":
+                    return
+                while self.view.now_screen == "how_to_play":
+                    return
+
+                while self.view.now_screen == "test":
+                    self.model.update()
+                    pygame.display.update()
+                
 
 
 if __name__ == "__main__":
