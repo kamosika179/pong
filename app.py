@@ -15,7 +15,7 @@ class View:
         self.now_screen = "test"
         self.sprites = {}
         #self.sprites["bar"] = pygame.image.load("bar.png")
-        self.sprites["ball"] = pygame.image.load("ball.jpg")
+        self.sprites["ball"] = pygame.image.load("ball.png")
         #self.sprites["block"] = pygame.image.load("block.png")
         #self.sprites["special_block"] = pygame.image.load("special_block.png")
         #self.sprites["speed_item"] = pygame.image.load("speed_item.png")
