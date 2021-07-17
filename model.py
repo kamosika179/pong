@@ -1,13 +1,14 @@
 
 class Visible:
     #初期化、name,visual_nameはstring、x_pos、y_posは左上をさすはずです
-    def __init__(self,init_x_pos,init_y_pos,name,):
+    def __init__(self,init_x_pos,init_y_pos,name,size):
         self.is_appear = True
         self.init_x_pos = init_x_pos
         self.init_y_pos = init_y_pos
         self.x_pos = init_x_pos
         self.y_pos = init_y_pos
         self.name = name
+        self.size = size
 
     #is_apeerを切り替えて表示されないようにする
     def delete(self):
@@ -29,8 +30,8 @@ class Visible:
 class Ball(Visible):
 
     #x_speedとy_speedが追加されています
-    def __init__(self, init_x_pos, init_y_pos, name,x_speed,y_speed):
-        super().__init__(init_x_pos, init_y_pos, name)
+    def __init__(self, init_x_pos, init_y_pos, name, size,x_speed,y_speed):
+        super().__init__(init_x_pos, init_y_pos, name, size)
         self.x_speed = x_speed
         self.y_speed = y_speed
 
@@ -59,8 +60,8 @@ class Item(Ball):
     #アイテムは下に落ちるだけなのでx_speedを0にする
     #item_typeはitemの種類を表しています。最初はクラスで分けていたけどなんか・・・汚いので
     #種類はspeedup,twin,biggerの３種類です。main関数のinteractなんたらーで利用しています。
-    def __init__(self, init_x_pos, init_y_pos, name, x_speed, y_speed,item_type):
-        super().__init__(init_x_pos, init_y_pos, name, x_speed, y_speed)
+    def __init__(self, init_x_pos, init_y_pos, name, size, x_speed, y_speed,item_type):
+        super().__init__(init_x_pos, init_y_pos, name, size, x_speed, y_speed)
         self.x_speed = 0
         self.item_type = item_type
 
@@ -71,8 +72,8 @@ class Item(Ball):
 class Bar(Visible):
 
     #lengthとx_speedを追加した。
-    def __init__(self, init_x_pos, init_y_pos, name, length, x_speed):
-        super().__init__(init_x_pos, init_y_pos, name)
+    def __init__(self, init_x_pos, init_y_pos, name, size, length, x_speed):
+        super().__init__(init_x_pos, init_y_pos, name, size)
         self.length = length
         self.x_speed = x_speed
 
@@ -95,8 +96,8 @@ class Bar(Visible):
 
 class Block(Visible):
     #itemオブジェクトを入れる変数を持たせる。初期値はNone
-    def __init__(self, init_x_pos, init_y_pos, name):
-        super().__init__(init_x_pos, init_y_pos, name)
+    def __init__(self, init_x_pos, init_y_pos, name,size):
+        super().__init__(init_x_pos, init_y_pos, name,size)
         self.item = None
 
     #itemを持っているかどうか？
@@ -129,8 +130,8 @@ Modelならviewを持っているので、
 Modelの中でview.next_screen = Button.push_and_get_next_screenにしようか
 '''
 class Button(Visible):
-    def __init__(self, init_x_pos, init_y_pos, name,next_screen):
-        super().__init__(init_x_pos, init_y_pos, name)
+    def __init__(self, init_x_pos, init_y_pos, name,size,next_screen):
+        super().__init__(init_x_pos, init_y_pos, name,size)
         self.next_screen = next_screen
 
     def push_and_get_next_screen(self):
@@ -143,9 +144,9 @@ class Model:
         self.view = view
         self.blocks = []
         #座標が未確定なので。
-        #self.bar = Bar()
-        self.ball = Ball(10,10,"ball",0,0)
-        self.visibles = [self.ball]
+        self.bar = Bar(10,10,"bar",(300,300),10,5)
+        self.ball = Ball(10,10,"ball",(300,300),0,0)
+        self.visibles = [self.ball,self.bar]
 
     #Controllerで呼び出すかも？な処理
     def move(self,identifier_key):
@@ -227,7 +228,7 @@ class Model:
                 #self.interact_bar_ball()
                 #self.interact_block_ball()
                 #self.interact_wall_ball()
-                print("test")
+                a = 1 #テストで書いているだけ
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
             if v.get_name() == "item":

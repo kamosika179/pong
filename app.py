@@ -6,7 +6,7 @@ from pygame.locals import *
 from model import Model
 
 WIN_SIZE = (700,800)
-WIN_TITLE = "a"
+WIN_TITLE = "break_block"
 class View:
     def __init__(self,screen):
         #この辺はサンプルコードまるパクリです
@@ -14,8 +14,8 @@ class View:
         #どの画面を表示するか決める。
         self.now_screen = "test"
         self.sprites = {}
-        #self.sprites["bar"] = pygame.image.load("bar.png")
-        self.sprites["ball"] = pygame.image.load("ball.png")
+        self.sprites["bar"] = pygame.image.load("sprites/bar.png")
+        self.sprites["ball"] = pygame.image.load("sprites/ball.png")
         #self.sprites["block"] = pygame.image.load("block.png")
         #self.sprites["special_block"] = pygame.image.load("special_block.png")
         #self.sprites["speed_item"] = pygame.image.load("speed_item.png")
@@ -33,7 +33,8 @@ class View:
 
     def draw(self,visible_obj):
         img = self.sprites[visible_obj.name]
-        self.screen.blit(img,(visible_obj.x_pos,visible_obj.y_pos))
+        img_trasform = pygame.transform.scale(img,visible_obj.size)
+        self.screen.blit(img_trasform,(visible_obj.x_pos,visible_obj.y_pos))
 
     
 class Controller:
@@ -56,14 +57,35 @@ class App:
         self.model = Model(self.view)
         self.controller = Controller(self.model)
 
+        #keyの押しっぱなしを適応する
+        #ここの第二引数を調整することでバーの速さを調整できる気もする！
+        pygame.key.set_repeat(5,15)
+
+    '''
+   イベントに関する処理をまとめたもの
+   以前の方法だと、現在のscreenを表示するためにwhile分使っているために、その外側の
+   eventに関する処理を行うことができなかったために、ここで関数としてまとめて、
+   screenを表示するためのwhile文の中でその関数を呼び出す形にしたいが。。。
+   ちょっとゴリ押しな気もするのでいい案があれば・・・よろしく
+   '''
+    def event_controll(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()        
+             
+            if event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    self.controller.left_key_down()
+                elif event.key == K_RIGHT:
+                    self.controller.right_key_down()
+
+
     def event_loop(self):
         clock = pygame.time.Clock()
 
+    
         while True:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
 
                 #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
                 while self.view.now_screen == "title":
@@ -76,6 +98,9 @@ class App:
                     return
 
                 while self.view.now_screen == "test":
+                    self.event_controll()
+                    #画面を黒で塗りつぶす。これがないと千手観音みたいになる
+                    self.screen.fill((0,0,0))
                     self.model.update()
                     pygame.display.update()
                 
