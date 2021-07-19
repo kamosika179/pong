@@ -22,7 +22,7 @@ class View:
         #self.sprites["clone_item"] = pygame.image.load("clone_item.png")
         #self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
         #play画面では使わなそうなもの
-        #self.sprites["titlelogo"] = pygame.image.load("titlelogo.png")
+        self.sprites["title"] = pygame.image.load("sprites/title.png")
         #self.sprites["stageclear"] = pygame.image.load("stageclear.png")
         #self.sprites["gameover"] = pygame.image.load("gameover.png")
         #self.sprites["start_button"] = pygame.image.load("start_button.png")
@@ -101,6 +101,7 @@ class App:
                     self.event_controll()
                     #画面を黒で塗りつぶす。これがないと千手観音みたいになる
                     self.screen.fill((0,0,0))
+                    self.model.make_title()
                     self.model.update()
                     pygame.display.update()
                 

@@ -165,13 +165,13 @@ class Model:
                 self.blocks[i][j] = Block()
 
     #ボタンを作成して、visiblesに追加する
-    def create_button(self,x_pos,y_pos,name,next_screen):
-        bt = Button(x_pos,y_pos,name,next_screen)
+    def create_button(self,x_pos,y_pos,name,size,next_screen):
+        bt = Button(x_pos,y_pos,name,size,next_screen)
         self.visibles.append(bt)
 
     #画像を作成して、visiblesに追加する
-    def create_picture(self,x_pos,y_pos,name):
-        pi = Visible(x_pos,y_pos,name)
+    def create_picture(self,x_pos,y_pos,name,size):
+        pi = Visible(x_pos,y_pos,name,size)
         self.visibles.append(pi)
 
     #ブロックとボールが接触した時の処理を書く。ここが一番難関になるでしょう。
@@ -208,6 +208,10 @@ class Model:
         #下の壁に衝突したなら消す
         self.ball.delete()
 
+    #title画面を作る
+    def make_title(self):
+        #ウィンドウサイズと同じ画像を作る
+        self.create_picture(0,0,"title",(700,800))
     '''
     ページ切り替えの関数を作ってもいいかも。
     プレイ画面からクリア画面へ行こうとしたら。
