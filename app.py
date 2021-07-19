@@ -80,11 +80,10 @@ class App:
                 elif event.key == K_RIGHT:
                     self.controller.right_key_down()
 
-
+    #仮
+    i = 0
     def event_loop(self):
         clock = pygame.time.Clock()
-
-    
         while True:
 
                 #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
@@ -101,7 +100,11 @@ class App:
                     self.event_controll()
                     #画面を黒で塗りつぶす。これがないと千手観音みたいになる
                     self.screen.fill((0,0,0))
-                    self.model.make_title()
+                    #仮実装
+                    #一度だけmake_titleを呼び出すためにこうしている。
+                    if self.i == 0:
+                        self.model.make_title()
+                        self.i =1 
                     self.model.update()
                     pygame.display.update()
                 

@@ -144,9 +144,9 @@ class Model:
         self.view = view
         self.blocks = []
         #座標が未確定なので。
-        self.bar = Bar(10,10,"bar",(300,300),10,5)
+        self.bar = Bar(10,600,"bar",(300,300),10,5)
         self.ball = Ball(10,10,"ball",(300,300),0,0)
-        self.visibles = [self.ball,self.bar]
+        self.visibles = [self.bar,self.ball]
 
     #Controllerで呼び出すかも？な処理
     def move(self,identifier_key):
@@ -212,13 +212,26 @@ class Model:
     def make_title(self):
         #ウィンドウサイズと同じ画像を作る
         self.create_picture(0,0,"title",(700,800))
+        #描画順を調整する
+        self.sort_visual_order()
+    
+    #描画する順番を調整する
+    def sort_visual_order(self):
+        for e in self.visibles:
+            #背景の要素を最初に描画するようにする
+            if e.name == "title":
+                self.visibles.remove(e)
+                temp = self.visibles[0]
+                self.visibles[0] = e
+                self.visibles.append(temp)
+
     '''
     ページ切り替えの関数を作ってもいいかも。
     プレイ画面からクリア画面へ行こうとしたら。
     クリアしたら、現在のvisiblesを全部removeして、
     クリア画面に必要なvisibleを作ってしまうような関数。
     '''
-    
+
     #おそらく、毎秒呼び出すような。そんな感じの処理をまとめる。
     def update(self):
 
