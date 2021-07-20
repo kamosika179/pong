@@ -12,7 +12,7 @@ class View:
         #この辺はサンプルコードまるパクリです
         self.screen = screen
         #どの画面を表示するか決める。
-        self.now_screen = "test"
+        self.now_screen = "title"
         self.sprites = {}
         self.sprites["bar"] = pygame.image.load("sprites/bar.png")
         self.sprites["ball"] = pygame.image.load("sprites/ball.png")
@@ -22,11 +22,11 @@ class View:
         #self.sprites["clone_item"] = pygame.image.load("clone_item.png")
         #self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
         #play画面では使わなそうなもの
-        #self.sprites["titlelogo"] = pygame.image.load("titlelogo.png")
+        self.sprites["title"] = pygame.image.load("sprites/title.png")
         #self.sprites["stageclear"] = pygame.image.load("stageclear.png")
         #self.sprites["gameover"] = pygame.image.load("gameover.png")
-        #self.sprites["start_button"] = pygame.image.load("start_button.png")
-        #self.sprites["score_button"] = pygame.image.load("score_button.png")
+        self.sprites["start"] = pygame.image.load("sprites/start.png")
+        self.sprites["score"] = pygame.image.load("sprites/score.png")
         #self.sprites["retry_button"] = pygame.image.load("retry_button.png")
         #self.sprites["exit_button"] = pygame.image.load("exit_button.png")
 
@@ -73,36 +73,54 @@ class App:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()        
-             
+            
+            #キー入力に関するもの
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     self.controller.left_key_down()
                 elif event.key == K_RIGHT:
                     self.controller.right_key_down()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and self.view.now_screen == "title":
+                for e in self.model.visibles:
+                    if e.name == "start" and e.is_inner(event.pos):
+                        self.view.now_screen = e.push_and_get_next_screen()
+                        #画面に表示されている要素を全て削除する
+                        for s in self.model.visibles:
+                            s.delete()
+                        #プレイ画面を作る。
+                        self.model.make_game_play()
 
-
+    #仮
+    i = 0
     def event_loop(self):
         clock = pygame.time.Clock()
-
-    
         while True:
 
                 #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
                 while self.view.now_screen == "title":
-                    return
+                    self.event_controll()
+                    #画面を黒で塗りつぶす。これがないと千手観音みたいになる
+                    self.screen.fill((0,0,0))
+                    #仮実装
+                    #一度だけmake_titleを呼び出すためにこうしている。
+                    if self.i == 0:
+                        self.model.make_title()
+                        self.i =1 
+                    self.model.update()
+                    pygame.display.update()
+
                 while self.view.now_screen == "game_play":
-                    return
+                    self.event_controll()
+                    self.screen.fill((0,0,0))
+                    self.model.update()
+                    pygame.display.update()
+
                 while self.view.now_screen == "ranking":
                     return
                 while self.view.now_screen == "how_to_play":
                     return
 
-                while self.view.now_screen == "test":
-                    self.event_controll()
-                    #画面を黒で塗りつぶす。これがないと千手観音みたいになる
-                    self.screen.fill((0,0,0))
-                    self.model.update()
-                    pygame.display.update()
                 
 
 

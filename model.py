@@ -137,16 +137,23 @@ class Button(Visible):
     def push_and_get_next_screen(self):
         return self.next_screen
     
+    #押された場所か内部かどうかを判定する
+    def is_inner(self,mouse_pos):
+        if self.x_pos < mouse_pos[0] and mouse_pos[0] < self.x_pos + self.size[0]:
+            if self.y_pos < mouse_pos[1] and mouse_pos[1] < self.y_pos + self.size[1]:
+                return True
+            else:
+                return False
+
 
 class Model:
 
     def __init__(self,view):
         self.view = view
         self.blocks = []
-        #座標が未確定なので。
-        self.bar = Bar(10,10,"bar",(300,300),10,5)
-        self.ball = Ball(10,10,"ball",(300,300),0,0)
-        self.visibles = [self.ball,self.bar]
+        self.bar = None
+        self.ball = None
+        self.visibles = []
 
     #Controllerで呼び出すかも？な処理
     def move(self,identifier_key):
@@ -165,13 +172,13 @@ class Model:
                 self.blocks[i][j] = Block()
 
     #ボタンを作成して、visiblesに追加する
-    def create_button(self,x_pos,y_pos,name,next_screen):
-        bt = Button(x_pos,y_pos,name,next_screen)
+    def create_button(self,x_pos,y_pos,name,size,next_screen):
+        bt = Button(x_pos,y_pos,name,size,next_screen)
         self.visibles.append(bt)
 
     #画像を作成して、visiblesに追加する
-    def create_picture(self,x_pos,y_pos,name):
-        pi = Visible(x_pos,y_pos,name)
+    def create_picture(self,x_pos,y_pos,name,size):
+        pi = Visible(x_pos,y_pos,name,size)
         self.visibles.append(pi)
 
     #ブロックとボールが接触した時の処理を書く。ここが一番難関になるでしょう。
@@ -208,13 +215,38 @@ class Model:
         #下の壁に衝突したなら消す
         self.ball.delete()
 
+    #title画面を作る
+    def make_title(self):
+        #ウィンドウサイズと同じ画像を作る
+        self.create_picture(0,0,"title",(700,800))
+        self.create_button(200,500,"start",(260,80),"game_play")
+        self.create_button(200,600,"score",(260,80),"ranking")
+        #描画順を調整する
+        self.sort_visual_order()
+    
+    def make_game_play(self):
+        self.bar = Bar(10,600,"bar",(300,300),10,5)
+        self.ball = Ball(10,10,"ball",(300,300),0,0)
+        self.visibles.append(self.bar)
+        self.visibles.append(self.ball)
+
+    #描画する順番を調整する
+    def sort_visual_order(self):
+        for e in self.visibles:
+            #背景の要素を最初に描画するようにする
+            if e.name == "title":
+                self.visibles.remove(e)
+                temp = self.visibles[0]
+                self.visibles[0] = e
+                self.visibles.append(temp)
+
     '''
     ページ切り替えの関数を作ってもいいかも。
     プレイ画面からクリア画面へ行こうとしたら。
     クリアしたら、現在のvisiblesを全部removeして、
     クリア画面に必要なvisibleを作ってしまうような関数。
     '''
-    
+
     #おそらく、毎秒呼び出すような。そんな感じの処理をまとめる。
     def update(self):
 
