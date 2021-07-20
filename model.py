@@ -137,6 +137,14 @@ class Button(Visible):
     def push_and_get_next_screen(self):
         return self.next_screen
     
+    #押された場所か内部かどうかを判定する
+    def is_inner(self,mouse_pos):
+        if self.x_pos < mouse_pos[0] and mouse_pos[0] < self.x_pos + self.size[0]:
+            if self.y_pos < mouse_pos[1] and mouse_pos[1] < self.y_pos + self.size[1]:
+                return True
+            else:
+                return False
+
 
 class Model:
 
@@ -212,6 +220,8 @@ class Model:
     def make_title(self):
         #ウィンドウサイズと同じ画像を作る
         self.create_picture(0,0,"title",(700,800))
+        self.create_button(200,500,"start",(260,80),"game_play")
+        self.create_button(200,600,"score",(260,80),"ranking")
         #描画順を調整する
         self.sort_visual_order()
     

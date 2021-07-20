@@ -25,8 +25,8 @@ class View:
         self.sprites["title"] = pygame.image.load("sprites/title.png")
         #self.sprites["stageclear"] = pygame.image.load("stageclear.png")
         #self.sprites["gameover"] = pygame.image.load("gameover.png")
-        #self.sprites["start_button"] = pygame.image.load("start_button.png")
-        #self.sprites["score_button"] = pygame.image.load("score_button.png")
+        self.sprites["start"] = pygame.image.load("sprites/start.png")
+        self.sprites["score"] = pygame.image.load("sprites/score.png")
         #self.sprites["retry_button"] = pygame.image.load("retry_button.png")
         #self.sprites["exit_button"] = pygame.image.load("exit_button.png")
 
@@ -73,12 +73,20 @@ class App:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()        
-             
+            
+            #キー入力に関するもの
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     self.controller.left_key_down()
                 elif event.key == K_RIGHT:
                     self.controller.right_key_down()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and self.view.now_screen == "test":
+                print(event.pos)
+                for e in self.model.visibles:
+                    if e.name == "start" and e.is_inner(event.pos):
+                        self.view.now_screen = e.push_and_get_next_screen()
+                        print("ok")
 
     #仮
     i = 0
@@ -90,6 +98,7 @@ class App:
                 while self.view.now_screen == "title":
                     return
                 while self.view.now_screen == "game_play":
+                    print("ok2")
                     return
                 while self.view.now_screen == "ranking":
                     return
