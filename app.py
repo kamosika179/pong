@@ -12,7 +12,7 @@ class View:
         #この辺はサンプルコードまるパクリです
         self.screen = screen
         #どの画面を表示するか決める。
-        self.now_screen = "test"
+        self.now_screen = "title"
         self.sprites = {}
         self.sprites["bar"] = pygame.image.load("sprites/bar.png")
         self.sprites["ball"] = pygame.image.load("sprites/ball.png")
@@ -81,12 +81,15 @@ class App:
                 elif event.key == K_RIGHT:
                     self.controller.right_key_down()
             
-            if event.type == pygame.MOUSEBUTTONDOWN and self.view.now_screen == "test":
-                print(event.pos)
+            if event.type == pygame.MOUSEBUTTONDOWN and self.view.now_screen == "title":
                 for e in self.model.visibles:
                     if e.name == "start" and e.is_inner(event.pos):
                         self.view.now_screen = e.push_and_get_next_screen()
-                        print("ok")
+                        #画面に表示されている要素を全て削除する
+                        for s in self.model.visibles:
+                            s.delete()
+                        #プレイ画面を作る。
+                        self.model.make_game_play()
 
     #仮
     i = 0
@@ -96,16 +99,6 @@ class App:
 
                 #どの画面を表示するか、now_screenを見て決める。画面遷移をさせたい時はnow_screenの値を変えるようにする．
                 while self.view.now_screen == "title":
-                    return
-                while self.view.now_screen == "game_play":
-                    print("ok2")
-                    return
-                while self.view.now_screen == "ranking":
-                    return
-                while self.view.now_screen == "how_to_play":
-                    return
-
-                while self.view.now_screen == "test":
                     self.event_controll()
                     #画面を黒で塗りつぶす。これがないと千手観音みたいになる
                     self.screen.fill((0,0,0))
@@ -116,6 +109,18 @@ class App:
                         self.i =1 
                     self.model.update()
                     pygame.display.update()
+
+                while self.view.now_screen == "game_play":
+                    self.event_controll()
+                    self.screen.fill((0,0,0))
+                    self.model.update()
+                    pygame.display.update()
+
+                while self.view.now_screen == "ranking":
+                    return
+                while self.view.now_screen == "how_to_play":
+                    return
+
                 
 
 

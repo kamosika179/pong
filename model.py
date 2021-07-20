@@ -151,10 +151,9 @@ class Model:
     def __init__(self,view):
         self.view = view
         self.blocks = []
-        #座標が未確定なので。
-        self.bar = Bar(10,600,"bar",(300,300),10,5)
-        self.ball = Ball(10,10,"ball",(300,300),0,0)
-        self.visibles = [self.bar,self.ball]
+        self.bar = None
+        self.ball = None
+        self.visibles = []
 
     #Controllerで呼び出すかも？な処理
     def move(self,identifier_key):
@@ -225,6 +224,12 @@ class Model:
         #描画順を調整する
         self.sort_visual_order()
     
+    def make_game_play(self):
+        self.bar = Bar(10,600,"bar",(300,300),10,5)
+        self.ball = Ball(10,10,"ball",(300,300),0,0)
+        self.visibles.append(self.bar)
+        self.visibles.append(self.ball)
+
     #描画する順番を調整する
     def sort_visual_order(self):
         for e in self.visibles:
